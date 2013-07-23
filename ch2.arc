@@ -21,8 +21,8 @@
 
 (def member (x b)
   (if (no b)    nil
-      (< x b!d) (member x b!l <)
-      (< b!d x) (member x b!r <)
+      (< x b!d) (member x b!l)
+      (< b!d x) (member x b!r)
                 t))
     
 (def insert (x b)
@@ -50,11 +50,25 @@
 (def insert-2-3 (x b)
   (catch (rinsert-2-3 x b b)))
 
+; TODO I don't like this. It still copies the nodes, just ignores the copies if they're found to be extraneous.
 (def rinsert-2-3 (x b root)
   (if (no b)    (inst 'node 'd x)
       (< x b!d) (inst 'node 'l (rinsert-2-3 x b!l root) 'd b!d 'r b!r)
       (< b!d x) (inst 'node 'l b!l 'd b!d 'r (rinsert-2-3 x b!r root))
                 (throw root)))
+
+; exercise 2.4
+; Combine the ideas of the previous two exercises to obtain a version of insert that performs no unnecessary copying and uses no more than d + 1 comparisons.
+(def insert-2-4 (x b)
+  (catch (rinsert-2-4 x b b)))
+
+(def rinsert-2-4 (x b root (o c nil))
+  (if (no b)           (if (is c x) (throw root) (inst 'node 'd x))
+      (< x b!d)        (inst 'node 'l (rinsert-2-4 x b!l root c) 'd b!d 'r b!r)
+      (or
+        (no (< x b!d))
+        (<= x b!d))    (inst 'node 'l b!l 'd b!d 'r (rinsert-2-4 x b!r root b!d))))
+  
 ; based on pg's code
 ; source: http://www.arclanguage.com/item?id=2330
 (def bst-mem (x b f<) ; x is proposed node, b is target bst, f< is comparison function
