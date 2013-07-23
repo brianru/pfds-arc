@@ -14,11 +14,6 @@
       '()
       (cons xs (suffixes (cdr xs)))))
 
-; Exercise 2.2
-;
-; In the worst case, member performs approximately 2d comparisons, where d is the depth of the tree. Rewrite member to take no more than d + 1 comparisons by keeping track of a candidate element that might be equal to the query element (say, the element for which < returned fales of <= returned true) and checking for equality only when you hit the bottom of the tree.
-;
-;
 (deftem node
   d nil  ; node
   l nil  ; left sub-tree
@@ -41,15 +36,25 @@
                  b))
 
 ; exercise 2.2
+; In the worst case, member performs approximately 2d comparisons, where d is the depth of the tree. Rewrite member to take no more than d + 1 comparisons by keeping track of a candidate element that might be equal to the query element (say, the element for which < returned fales of <= returned true) and checking for equality only when you hit the bottom of the tree.
 (def member-2-2 (x b (o c nil))
   (if (no b)             (if (is c x) t nil)
       (< x b!d)          (member-2-2 x b!l c)
-      (or (no (< x b!d))
-          (<= x b!d))    (member-2-2 x b!r b!d)))
+      (or 
+        (no (< x b!d))
+        (<= x b!d))      (member-2-2 x b!r b!d)))
 
 
 ; exercise 2.3
-(def insert-2-3 (x b 
+; Inserting an existing element into a binary search tree copies the entire search path even though the copied nodes are indistringuishable from the originals. Rewrite insert using exceptions to avoid this copying. Establish only one handler per insertion rather than one handler per iteration.
+(def insert-2-3 (x b)
+  (catch (rinsert-2-3 x b b)))
+
+(def rinsert-2-3 (x b root)
+  (if (no b)    (inst 'node 'd x)
+      (< x b!d) (inst 'node 'l (rinsert-2-3 x b!l root) 'd b!d 'r b!r)
+      (< b!d x) (inst 'node 'l b!l 'd b!d 'r (rinsert-2-3 x b!r root))
+                (throw root)))
 ; based on pg's code
 ; source: http://www.arclanguage.com/item?id=2330
 (def bst-mem (x b f<) ; x is proposed node, b is target bst, f< is comparison function
