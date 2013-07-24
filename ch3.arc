@@ -46,3 +46,16 @@
       (<= x h!x) (maket x h!a (insert-3-2 h!x h!b))
                  (maket h!x h!a (insert-3-2 x h!b)))) 
 
+; exercise 3.3
+; Implement a function fromList of type Elem.T list -> Heap that produces a leftist heap from an unordered list of elements by first converting each element into a singleton heap and then merging the heaps until only one heap remains. Instead of merging the heaps in one right-to-left or left-to-right pass using foldr or foldl, merge the heaps in ceiling(log n) passes, where each pass merges adjacent pairs of heaps. Show that fromList takes only O(n) time.
+; 1) Create list of singleton heaps
+; 2) Recursively merge mapped pairs until 1 element remains in list
+(def fromlist (l)
+  (if (no:is (type l) 'cons) (err "not a list!")
+                             (pairwise-reduce (map [maket _ nil nil] l) merge)))
+      
+(def pairwise-reduce (l f)
+  (if (is (len l) 1)
+    (car l)
+    (pairwise-reduce (flat:pair l f) f)))
+    
