@@ -6,7 +6,6 @@
 ;   A leftist heap does not require the tree to be balanced, but does require the height of left spines to be >= height of right spines.
 ;   Therefore, a leftist heap will contain more elements outside the right spine than a balanced tree and the right spine of a leftist heap can contain no more than log(n + 1) elements, the number of elements in a balanced tree.
 
-; exercise 3.2
 (deftem 'node 'r nil 'x nil 'a nil 'b nil)
 
 ; TODO refactor. this is ugly.
@@ -39,4 +38,11 @@
 (def deletemin (h)
   (if (isempty h) (err "EMPTY")
                   (merge h!a h!b)))
+
+; exercise 3.2
+; Define insert directly rather than via a call to merge.
+(def insert-3-2 (x h)
+  (if (no h)     (inst 'node 'r 1 'x x)
+      (<= x h!x) (maket x h!a (insert-3-2 h!x h!b))
+                 (maket h!x h!a (insert-3-2 x h!b)))) 
 
