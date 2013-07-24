@@ -48,26 +48,25 @@
 ; exercise 2.3
 ; Inserting an existing element into a binary search tree copies the entire search path even though the copied nodes are indistringuishable from the originals. Rewrite insert using exceptions to avoid this copying. Establish only one handler per insertion rather than one handler per iteration.
 (def insert-2-3 (x b)
-  (catch (rinsert-2-3 x b b)))
-
-; TODO I don't like this. It still copies the nodes, just ignores the copies if they're found to be extraneous.
-(def rinsert-2-3 (x b root)
-  (if (no b)    (inst 'node 'd x)
-      (< x b!d) (inst 'node 'l (rinsert-2-3 x b!l root) 'd b!d 'r b!r)
-      (< b!d x) (inst 'node 'l b!l 'd b!d 'r (rinsert-2-3 x b!r root))
-                (throw root)))
+  (catch
+    (def rinsert-2-3 (x b root)
+      (if (no b)    (inst 'node 'd x)
+          (< x b!d) (inst 'node 'l (rinsert-2-3 x b!l root) 'd b!d 'r b!r)
+          (< b!d x) (inst 'node 'l b!l 'd b!d 'r (rinsert-2-3 x b!r root))
+                    (throw root)))
+    (rinsert-2-3 x b b)))
 
 ; exercise 2.4
 ; Combine the ideas of the previous two exercises to obtain a version of insert that performs no unnecessary copying and uses no more than d + 1 comparisons.
 (def insert-2-4 (x b)
-  (catch (rinsert-2-4 x b b)))
-
-(def rinsert-2-4 (x b root (o c nil))
-  (if (no b)           (if (is c x) (throw root) (inst 'node 'd x))
-      (< x b!d)        (inst 'node 'l (rinsert-2-4 x b!l root c) 'd b!d 'r b!r)
-      (or
-        (no (< x b!d))
-        (<= x b!d))    (inst 'node 'l b!l 'd b!d 'r (rinsert-2-4 x b!r root b!d))))
+  (catch
+    (def rinsert-2-4 (x b root c)
+      (if (no b)           (if (is c x) (throw root) (inst 'node 'd x))
+          (< x b!d)        (inst 'node 'l (rinsert-2-4 x b!l root c) 'd b!d 'r b!r)
+          (or
+            (no (< x b!d))
+            (<= x b!d))    (inst 'node 'l b!l 'd b!d 'r (rinsert-2-4 x b!r root b!d))))
+    (rinsert-2-4 x b b nil)))
   
 ; exercise 2.5
 ; Sharing can also be useful within a single object, not just between objects. For example, if the two subtrees of a given node are identical, then they can be represented by the same tree.
@@ -97,7 +96,30 @@
 
 ; exercise 2.6
 ; Adapt the UnbalancedSet functor to support finite maps rather than sets. Figure 2.10 gives a minimal signature for finite maps. (Note that the NotFound exception is not predefined in Standard ML--you will have to define it yourself. Although this exception could be made part of the FiniteMap signature, with every impleentation defining its own NotFound exception, it is convenient for all finite maps to use the same exception.
-(deftem 'mnode 'l nil 'd nil 'r nil)
+(deftem 'node 'l nil 'd nil 'r nil)
+
+; unique set of keys
+; do nothing if key matches but value differs ; TODO replace value
+; create node if map is nil
+(def bind (k v m) 
+  (catch
+    (def rbind (k v m root c)
+      (if (no m)                (if (is (car c) k)
+                                  (throw root) 
+                                  (inst 'node 'd (list k v)))
+          (< k (car m!d))       (inst 'node 'l (rbind k v m!l root c) 'd m!d 'r m!r)
+          (or
+            (no (< k (car m!d)))
+            (<= k (car m!d)))   (inst 'node 'l m!l 'd m!d 'r (rbind k v m!r root m!d))))
+    (rbind k v m m nil)))
+
+(def lookup (k m (o c nil))
+  (if (no m)                (if (is (car c) k) (last c) nil)
+      (< k (car m!d))       (lookup k m!l c)
+      (or 
+        (no (< k (car m!d)))
+        (<= k (car m!d)))   (lookup k m!r m!d)))
+
 
 ; pg's code
 ; source: http://www.arclanguage.com/item?id=2330
