@@ -114,7 +114,7 @@
     (rbind k v m m nil)))
 
 (def lookup (k m (o c nil))
-  (if (no m)                (if (is (car c) k) (last c) nil)
+  (if (no m)                (if (is (car c) k) (last c) (err "NotFound"))
       (< k (car m!d))       (lookup k m!l c)
       (or 
         (no (< k (car m!d)))
