@@ -74,7 +74,7 @@
 
 (def merge-3-4 (h1 h2)
   (if (no (and h1 h2)) (or h1 h1)
-      (<= h1!x h2!x)   (maket-3-4 h1!x h2!a (merge-3-4 h1!b h2))
+      (<= h1!x h2!x)   (maket-3-4 h1!x h1!a (merge-3-4 h1!b h2))
                        (maket-3-4 h2!x h2!a (merge-3-4 h1 h2!b)))) 
 
 (def insert-3-4 (x h)
