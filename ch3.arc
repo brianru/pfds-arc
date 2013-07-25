@@ -14,9 +14,8 @@
       h!r    h!r
              0))
 
-; constructs with x a b and calculated r
 (def maket (x a b)
-  (if (>= rank.a rank.b)
+  (if (>= rank.a rank.b) ; enforce leftist property. swap children if rank.b > rank.a
     (inst 'node 'r (+ 1 rank.b) 'x x 'a a 'b b)
     (inst 'node 'r (+ 1 rank.a) 'x x 'a b 'b a)))
 
@@ -32,12 +31,10 @@
   (merge h (inst 'node 'r 1 'x x)))
 
 (def findmin (h)
-  (if (isempty h) (err "EMPTY")
-                  h!x))
+  (if (isempty h) (err "EMPTY") h!x))
 
 (def deletemin (h)
-  (if (isempty h) (err "EMPTY")
-                  (merge h!a h!b)))
+  (if (isempty h) (err "EMPTY") (merge h!a h!b)))
 
 ; exercise 3.2
 ; Define insert directly rather than via a call to merge.
@@ -59,3 +56,41 @@
     (car l)
     (pairwise-reduce (flat:pair l f) f)))
     
+; exercise 3.4
+; Weight-biased leftist heaps are an alternative to leftist heaps that replace the leftist property with the weight-biased leftist property: the size of any left child is at least as large as the size of its right sibling.
+; (a) Prove that the right spine of a weight-biased leftist heap contains at most floor(log(n+1)) elements.
+;     It's the same argument as before, except size is used instead of rank.
+;     Tree will be more balanced but left is still heavier than right.
+
+; (b) Modify the implementation in Figure 3.2 to obtain weight-biased leftist heaps.
+(deftem 'wnode 's nil 'x nil 'a nil 'b nil)
+
+(def size (h)
+  (if (no h) 0
+      (no:and h!a h!b) 0
+      h!s))
+
+(def maket-3-4 (x a b)
+  (if (>= size.a size.b)
+    (inst 'wnode 's (+ size.a size.b 1) 'x x 'a a 'b b)
+    (inst 'wnode 's (+ size.a size.b 1) 'x x 'a b 'b a)))
+
+(def merge-3-4 (h1 h2)
+  (if (no (and h1 h2)) (or h1 h1)
+      (<= h1!x h2!x)   (maket-3-4 h1!x h2!a (merge-3-4 h1!b h2))
+                       (maket-3-4 h2!x h2!a (merge-3-4 h1 h2!b)))) 
+
+(def insert-3-4 (x h)
+  (merge-3-4 h (inst 'wnode 's 1 'x x)))
+
+(def findmin-3-4 (h)
+  (findmin h))
+
+(def deletemin-3-4 (h)
+  (if (isempty h) (err "empty!")
+                  (merge-3-4 h!a h!b)))
+
+; (c) Currently, merge operates in two passes: a top-down pass consisting of calls to merge, and a bottom-up pass consisting of calls to the helper function makeT. Modify merge for weight-biased leftist heaps to operate in a single, top-down pass.
+
+; (d) What advantages would the top-down version of merge have in a lazy environment? In a concurrrent environment?
+
