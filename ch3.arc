@@ -8,11 +8,8 @@
 
 (deftem 'node 'r nil 'x nil 'a nil 'b nil)
 
-; TODO refactor. this is ugly.
 (def rank (h)
-  (if (no h) 0
-      h!r    h!r
-             0))
+  (if h h!r 0))
 
 (def maket (x a b)
   (if (>= rank.a rank.b) ; enforce leftist property. swap children if rank.b > rank.a
