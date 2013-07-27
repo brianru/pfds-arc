@@ -1,3 +1,5 @@
+; Ch 3.1 Leftist Heaps
+
 ; exercise 3.1
 ; Prove that the right spine of a leftist heap of size n contains at most floor(log(n + 1)) elements. (All algorithms in this book are base 2 unless otherwise indicated.)
 ;
@@ -73,7 +75,7 @@
     (inst 'wnode 's (+ size.a size.b 1) 'x x 'a b 'b a)))
 
 (def merge-3-4 (h1 h2)
-  (if (no (and h1 h2)) (or h1 h1)
+  (if (no:and h1 h2) (or h1 h2)
       (<= h1!x h2!x)   (maket-3-4 h1!x h1!a (merge-3-4 h1!b h2))
                        (maket-3-4 h2!x h2!a (merge-3-4 h1 h2!b)))) 
 
@@ -88,6 +90,7 @@
                   (merge-3-4 h!a h!b)))
 
 ; (c) Currently, merge operates in two passes: a top-down pass consisting of calls to merge, and a bottom-up pass consisting of calls to the helper function makeT. Modify merge for weight-biased leftist heaps to operate in a single, top-down pass.
+(def merge-3-4c (h1 h2) nil)
 
 ; (d) What advantages would the top-down version of merge have in a lazy environment? In a concurrrent environment?
 

@@ -3,3 +3,5 @@ Exercises from Purely Function Data Structures by Chris Okasaki, implemented in 
 
 
 Exercise instructions as well as necessary example implementations and signatures are also included.
+
+Before using any of this code, I highly recommend testing it.
