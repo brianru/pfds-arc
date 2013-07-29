@@ -112,11 +112,24 @@
 ;         ...
 ;   end
 ;
-; Noe that this functor is not specific to binomial heaps, but rather takes
+; Note that this functor is not specific to binomial heaps, but rather takes
 ; any implementation of heaps as a parameter. Complete this functor so that
 ; findMin takes O(1) time, and insert, merge, and deleteMin take O(logn) time
 ; (assuing that all four take O(logn) time or better for the underlying
 ; implementation H).
 
-
-
+; I'm doing this in Arc, which does not have functors.
+; Nevertheless, I will roughly describe the necessary functions:
+;   Heap has:
+;     a reference to the minimum element
+;     a list of (element heap) items
+;   
+;   findMin takes a heap and simply returns the reference to the min element
+;
+;   deletemin uses merge
+;   merge and insert both create a new element
+;   as part of creating a new element, compare said element's value to the
+;   existing minimum element in the heap. update when necessary.
+;   this is a constant time operation therefore it does not affect the big O
+;   performance characteristics of the underlying heap implementation
+;
