@@ -93,23 +93,13 @@
 (def merge-3-4c (h1 h2)
   (if (no:and h1 h2) (or h1 h2)
       (with (mh (if (<= h1!x h2!x) h1 h2) ; clean this up
-             nmh (if (is mh h1) h2 h1)
-             a (if (>= mh!a!s (+ mh!b!s nmh!s)) mh!a (merge-3-4c mh!b nmh))
-             b (if (is a mh!a) (merge-3-4c mh!b nmh) mh!a)) 
+             nmh (if (is mh h1) h2 h1))
         (inst 'wnode 's (+ h1!s h2!s 1) ; is this right?
                      'x mh!x
-                     'a a
-                     'b b))))
-; TODO the solution is to inline maket while still recursing down via merge
-; doing so means everything happens top down and with lazy evaluation you could get very useful performance characteristics
+                     'a (if (>= mh!a!s (+ mh!b!s nmh!s)) mh!a (merge-3-4c mh!b nmh))
+                     'b (if (is a mh!a) (merge-3-4c mh!b nmh) mh!a)))))
+; The solution is to inline maket while still recursing down via merge.
                       
-; I could inline maket...but that would not actually give us tail calls.
-; Let's think about what merge is doing.
-;
-; If h1 or h2 is nil, return the other.
-; Else if h1 < h2, make a new root with h1's value, h1's left child, and merge h1's right child with h2s.
-;            else, same but flipped 
-
 ; (d) What advantages would the top-down version of merge have in a lazy environment? In a concurrrent environment?
 ;    
 ;     In a lazy environment the top-down version suspends construction of lower parts of the tree until those parts are needed. This speeds up access to upper elements following merges, as the entire merge does not have to be completed prior to access.

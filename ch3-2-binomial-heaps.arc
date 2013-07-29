@@ -11,7 +11,8 @@
 (deftem 'heap 'ts nil)
 
 (def instree (t1 ts)
-  (if (empty ts)        (cons t1 ts) ; combine first 2 t cases
+; creating a new heap and inserting a new min tree to an existing heap are the same operation
+  (if (empty ts)        (cons t1 ts)
       (< t1!r car.ts!r) (cons t1 ts)
                         (instree (link t car.ts) cdr.ts)))
 
@@ -23,6 +24,19 @@
       (< car.ts2!r car.ts1!r) (cons car.ts2 (merge ts1 cdr.ts2))
                               (instree (link car.ts1 car.ts2) (merge cdr.ts1 cdr.ts2))))
 
-(def removemintree (t1)
-  (if (single t1) (car t1)
-      nil)) ; i don't get this
+(def removemintree (hp)
+  (if (single hp) (car hp)
+      (with ((tp tsp) (removemintree cdr.hp))
+        (if (<= car.hp!x tp!x) ; compare root of first tree to min root of all other trees in heap
+          (list car.hp cdr.hp)
+          (list tp (cons car.hp tsp))))))
+
+(def findmin (ts) (car:removemintree ts))
+
+(def deletemin (ts)
+  (with ((a d) (removemintree ts))
+    (merge (rev a!c) d)))
+
+; exercise 3.5 Define findmin directly rather than via a call to removemintree.
+
+
