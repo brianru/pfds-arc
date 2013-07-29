@@ -39,4 +39,7 @@
 
 ; exercise 3.5 Define findmin directly rather than via a call to removemintree.
 
-
+(def findmin-3-5 (ts)
+  (if (single ts)             (car ts)
+      (<= car.ts!x cadr.ts!x) (car ts)
+                              (findmin-3-5 cdr.ts)))
